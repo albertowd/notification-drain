@@ -1,2 +1,2 @@
 # NotificationDrain
-A simples notification filter for Androis systems.
+A simples notification filter for Android systems.
