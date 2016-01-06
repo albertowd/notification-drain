@@ -15,4 +15,6 @@
     <string name="basic_mode">Modo Básico</string>
     <string name="app_logo">Ícone do aplicativo.</string>
     <string name="key_word_error">Palavra chave vazia.</string>
+    <string name="key_add">Adicionar Palavra</string>
+    <string name="key_remove">Remover</string>
 </resources>

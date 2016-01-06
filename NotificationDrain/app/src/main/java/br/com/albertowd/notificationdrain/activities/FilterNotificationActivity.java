@@ -95,7 +95,7 @@ public class FilterNotificationActivity extends Activity {
         // Set the filter validator.
         new FilterTextWatcher(this, etFilter0);
 
-        //Set the go to notification access settings lintener.
+        // Set the go to notification access settings lintener.
         btNotificationAccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +103,7 @@ public class FilterNotificationActivity extends Activity {
             }
         });
 
+        // Set the remove key button listener.
         btRemoveFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,19 +125,21 @@ public class FilterNotificationActivity extends Activity {
             }
         });
 
+        // Set the add key button listener.
+        super.findViewById(R.id.btAddFilter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                appendFilter();
+            }
+        });
+
+        // Set the advanced mode button listener.
         super.findViewById(R.id.btSwitchToAdvancedMode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FilterNotificationActivity.this, RegexNotificationActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 FilterNotificationActivity.super.startActivity(intent);
-            }
-        });
-
-        super.findViewById(R.id.btAddFilter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                appendFilter();
             }
         });
     }
@@ -192,6 +195,9 @@ public class FilterNotificationActivity extends Activity {
         this.updateFilters();
     }
 
+    /**
+     * Get the non-error EditTexts to make the key words list to the filter and save it in the settings.
+     */
     public void validateFilters() {
         List<String> keyWords = new ArrayList<>();
         if (etFilter0.getError() == null) {
