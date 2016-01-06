@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="regex_filter"><a href='http://developer.android.com/reference/java/util/regex/Pattern.html'>Filtro Regex</a></string>
+    <string name="service_off">Serviço Desligado</string>
+    <string name="service_on">Serviço Ligado</string>
+    <string name="app_name">Notification Drain</string>
+    <string name="service_name">Notification Drain Service</string>
+    <string name="regex_error">Filtro regex inválido.</string>
+    <string name="service_help">Esse apicativo só funciona se você ativar o acesso à notificações nas configurações do celular.</string>
+    <string name="notification_access">Ativar Acesso à Notificações</string>
+    <string name="regex_hint">.*</string>
+    <string name="key_words">Palavras Chave</string>
+    <string name="key_word_hint">amor</string>
+    <string name="advanced_mode">Modo Avançado</string>
+    <string name="basic_mode">Modo Básico</string>
+    <string name="app_logo">Ícone do aplicativo.</string>
+    <string name="key_word_error">Palavra chave vazia.</string>
+</resources>
