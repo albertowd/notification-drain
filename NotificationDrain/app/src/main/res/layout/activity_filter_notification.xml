@@ -7,107 +7,107 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="br.com.albertowd.notificationdrain.activities.FilterNotificationActivity">
+    tools:context=".activities.FilterNotificationActivity">
+
+    <LinearLayout
+        android:id="@+id/llHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:gravity="center_vertical"
+            android:text="@string/key_words"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/btSwitchToAdvancedMode"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/advanced_mode" />
+    </LinearLayout>
 
     <CheckBox
+        android:id="@+id/cbService"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_off"
-        android:id="@+id/cbService"
-        android:checked="false"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_above="@+id/linearLayout"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/key_words"
-        android:layout_alignParentTop="true"
-        android:gravity="center_vertical"
-        android:layout_alignBottom="@+id/btSwitchToAdvancedMode"
-        android:id="@+id/textView"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/advanced_mode"
-        android:id="@+id/btSwitchToAdvancedMode"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true"
+        android:checked="false"
+        android:text="@string/service_off"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/textView"
-        android:layout_above="@+id/cbService">
+        android:layout_above="@+id/cbService"
+        android:layout_below="@+id/llHeader">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/llKeyList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/llKeyList">
+            android:orientation="vertical">
 
-            <EditText
+            <include
+                android:id="@+id/llFilter0"
+                layout="@layout/layout_filter"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/etFilter0"
-                android:hint="@string/key_word_hint" />
+                android:layout_height="wrap_content" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="end">
+                android:gravity="end"
+                android:orientation="horizontal">
 
                 <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/key_remove"
                     android:id="@+id/btRemoveFilter"
-                    android:enabled="false" />
-
-                <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/key_add"
-                    android:id="@+id/btAddFilter" />
+                    android:enabled="false"
+                    android:text="@string/key_remove" />
+
+                <Button
+                    android:id="@+id/btAddFilter"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/key_add" />
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="end"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentEnd="false"
-        android:id="@+id/linearLayout">
+        android:gravity="end"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="fill_parent"
+            android:id="@+id/tvNotificationHelp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/service_help"
-            android:id="@+id/tvNotificationHelp" />
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <Button
+            android:id="@+id/btNotificationAccess"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/notification_access"
-            android:id="@+id/btNotificationAccess" />
+            android:text="@string/notification_access" />
     </LinearLayout>
 
 </RelativeLayout>

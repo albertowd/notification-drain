@@ -9,72 +9,77 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activities.RegexNotificationActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/regex_filter"
-        android:id="@+id/tvFilter"
-        android:layout_alignParentTop="true"
-        android:gravity="center_vertical"
-        android:layout_alignParentStart="true"
-        android:layout_alignBottom="@+id/btSwitchToBasicMode" />
-
-    <CheckBox
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/service_off"
-        android:id="@+id/cbService"
-        android:checked="false"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_above="@+id/linearLayout2"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/etFilter"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentEnd="false"
-        android:scrollHorizontally="false"
-        android:layout_below="@+id/tvFilter"
-        android:hint="@string/regex_hint"
-        android:layout_above="@+id/cbService"
-        android:gravity="top" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/basic_mode"
-        android:id="@+id/btSwitchToBasicMode"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
-
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/llHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:gravity="end"
-        android:id="@+id/linearLayout2">
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/service_help"
-            android:id="@+id/tvNotificationHelp" />
+            android:id="@+id/tvFilter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:gravity="center_vertical"
+            android:text="@string/regex_filter"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Button
+            android:id="@+id/btSwitchToBasicMode"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/notification_access"
-            android:id="@+id/btNotificationAccess" />
+            android:text="@string/basic_mode" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/etFilter"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/cbService"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/llHeader"
+        android:ems="10"
+        android:gravity="top"
+        android:hint="@string/regex_hint"
+        android:inputType="textMultiLine"
+        android:scrollHorizontally="false" />
+
+    <CheckBox
+        android:id="@+id/cbService"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/llNotificationAccess"
+        android:layout_alignParentStart="true"
+        android:checked="false"
+        android:text="@string/service_off"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <LinearLayout
+        android:id="@+id/llNotificationAccess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvNotificationHelp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/service_help"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <Button
+            android:id="@+id/btNotificationAccess"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notification_access" />
     </LinearLayout>
 
 </RelativeLayout>

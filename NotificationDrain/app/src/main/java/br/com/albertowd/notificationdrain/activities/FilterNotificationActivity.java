@@ -16,6 +16,7 @@ import java.util.List;
 
 import br.com.albertowd.notificationdrain.R;
 import br.com.albertowd.notificationdrain.settings.DrainSettings;
+import br.com.albertowd.notificationdrain.util.Filter;
 import br.com.albertowd.notificationdrain.util.FilterTextWatcher;
 
 public class FilterNotificationActivity extends Activity {
@@ -41,9 +42,9 @@ public class FilterNotificationActivity extends Activity {
     private DrainSettings settings;
 
     /**
-     * First and required EditText filter.
+     * First and required filter.
      */
-    private EditText etFilter0;
+    private Filter llFilter0;
 
     /**
      * Layout to add new EditText filters.
@@ -53,22 +54,20 @@ public class FilterNotificationActivity extends Activity {
     /**
      * List of filters in the screen.
      */
-    private List<EditText> filters;
+    private List<Filter> filters;
 
     /**
-     * If possible, add a new EditText filter to the screen.
+     * If possible, add a new filter to the screen.
      *
      * @return If was possible to append the new filter.
      */
     private boolean appendFilter() {
-        boolean canAppend = ((EditText) super.findViewById(R.id.etFilter0)).getError() == null;
-        canAppend |= !filters.isEmpty() && filters.get(filters.size() - 1).getError() == null;
+        boolean canAppend = llFilter0.isValid();
+        canAppend |= !filters.isEmpty() && filters.get(filters.size() - 1).isValid();
         if (canAppend) {
-            EditText etFilter = new EditText(this);
-            new FilterTextWatcher(this, etFilter);
-            etFilter.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            llKeyList.addView(etFilter, llKeyList.getChildCount() - 1);
-            filters.add(etFilter);
+            Filter llFilter = new Filter((LinearLayout) this.getLayoutInflater().inflate(R.layout.layout_filter, null));
+            llKeyList.addView(llFilter.getLayout(), llKeyList.getChildCount() - 1);
+            filters.add(llFilter);
         }
 
         btRemoveFilter.setEnabled(!filters.isEmpty());
@@ -76,12 +75,12 @@ public class FilterNotificationActivity extends Activity {
     }
 
     /**
-     * Remove the last EditText filter in the screen.
+     * Remove the last filter in the screen.
      */
     private void removeFilter() {
         if (!filters.isEmpty()) {
-            EditText etFilter = filters.get(filters.size() - 1);
-            llKeyList.removeView(etFilter);
+            Filter llFilter = filters.get(filters.size() - 1);
+            llKeyList.removeView(llFilter.getLayout());
             filters.remove(filters.size() - 1);
         }
 
@@ -92,10 +91,7 @@ public class FilterNotificationActivity extends Activity {
      * Setup the listener of the buttons plus make the regex listener of the EditText.
      */
     private void setupListeners() {
-        // Set the filter validator.
-        new FilterTextWatcher(this, etFilter0);
-
-        // Set the go to notification access settings lintener.
+        // Set the go to notification access settings listener.
         btNotificationAccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,22 +141,38 @@ public class FilterNotificationActivity extends Activity {
     }
 
     /**
-     * Clear and updates the EditText filters from shared settings.
+     * Clear and updates the filters from shared settings.
      */
     private void updateFilters() {
         while (!filters.isEmpty())
             this.removeFilter();
 
         List<String> keyWords = settings.getKeyWords();
-        if (keyWords.isEmpty())
-            etFilter0.setText("");
-        else {
-            etFilter0.setText(keyWords.get(0));
+        List<String> notKeyWords = settings.getNotKeyWords();
+
+        llFilter0.setText("");
+
+        if (!keyWords.isEmpty()) {
+            llFilter0.setText(keyWords.get(0));
             keyWords.remove(0);
 
             for (String key : keyWords) {
                 if (this.appendFilter())
                     filters.get(filters.size() - 1).setText(key);
+            }
+        }
+
+        if (!notKeyWords.isEmpty()) {
+            if (llFilter0.getText() == "") {
+                llFilter0.setText(keyWords.get(0));
+                keyWords.remove(0);
+            }
+            for (String key : notKeyWords) {
+                if (this.appendFilter()) {
+                    Filter filter = filters.get(filters.size() - 1);
+                    filter.setHasToContains(false);
+                    filter.setText(key);
+                }
             }
         }
     }
@@ -173,7 +185,7 @@ public class FilterNotificationActivity extends Activity {
         btNotificationAccess = (Button) super.findViewById(R.id.btNotificationAccess);
         btRemoveFilter = (Button) super.findViewById(R.id.btRemoveFilter);
         cbService = (CheckBox) super.findViewById(R.id.cbService);
-        etFilter0 = (EditText) super.findViewById(R.id.etFilter0);
+        llFilter0 = new Filter((LinearLayout) super.findViewById(R.id.llFilter0));
         llKeyList = (LinearLayout) super.findViewById(R.id.llKeyList);
         filters = new ArrayList<>();
         settings = new DrainSettings(this);
@@ -196,16 +208,25 @@ public class FilterNotificationActivity extends Activity {
     }
 
     /**
-     * Get the non-error EditTexts to make the key words list to the filter and save it in the settings.
+     * Get the valid filters to make the key words list regex and save it in the settings.
      */
     public void validateFilters() {
         List<String> keyWords = new ArrayList<>();
-        if (etFilter0.getError() == null) {
-            keyWords.add(etFilter0.getText().toString().trim());
-            for (EditText filter : filters)
-                if (filter.getError() == null)
-                    keyWords.add(filter.getText().toString().trim());
+        List<String> notKeyWords = new ArrayList<>();
+        if (llFilter0.isValid()) {
+            if (llFilter0.hasToContain())
+                keyWords.add(llFilter0.getText());
+            else
+                notKeyWords.add(llFilter0.getText());
+            for (Filter filter : filters) {
+                if (filter.isValid()) {
+                    if (filter.hasToContain())
+                        keyWords.add(filter.getText());
+                    else
+                        notKeyWords.add(filter.getText());
+                }
+            }
         }
-        settings.setKeyWordFilters(keyWords);
+        settings.setKeyWordFilters(keyWords, notKeyWords);
     }
 }

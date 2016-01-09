@@ -38,6 +38,19 @@ public class DrainSettings {
     private Context context;
 
     /**
+     * Clean the regex rule.
+     *
+     * @param regex Regex rule.
+     */
+    private static String cleanRegex(String regex) {
+        String cleanRegex = regex.replace(REGEX_CASE_INSENSITIVE, "");
+        cleanRegex = cleanRegex.replace(REGEX_ANY_CHAR, "");
+        cleanRegex = cleanRegex.replace("(", "");
+        cleanRegex = cleanRegex.replace(")", "");
+        return cleanRegex;
+    }
+
+    /**
      * Default constructor.
      *
      * @param context Context to get the application context.
@@ -122,12 +135,42 @@ public class DrainSettings {
         if (regex.equals(REGEX_ANY_CHAR))
             return keyWords;
 
-        regex = regex.replace(REGEX_CASE_INSENSITIVE, "");
-        String[] splitted = regex.split("\\|");
+        regex = this.cleanRegex(regex);
+        String[] keyTypes = regex.split("\\?");
 
-        for (String reg : splitted)
-            keyWords.add(reg.replace("(" + REGEX_ANY_CHAR + "?" + REGEX_WORD_START, "").replace(REGEX_WORD_FINISH + REGEX_ANY_CHAR + ")", ""));
+        for (String type : keyTypes) {
+            if (type.startsWith("=")) {
+                String[] keys = type.substring(1).split("\\|");
+                for (String key : keys)
+                    keyWords.add(key);
+            }
+        }
         return keyWords;
+    }
+
+    /**
+     * Retrieve the list of not key words in the regex filter.
+     *
+     * @return List of words to filter.
+     */
+    public List<String> getNotKeyWords() {
+        List<String> notKeyWords = new ArrayList<>();
+
+        String regex = this.getRegexFilter();
+        if (regex.equals(REGEX_ANY_CHAR))
+            return notKeyWords;
+
+        regex = this.cleanRegex(regex);
+        String[] keyTypes = regex.split("\\?");
+
+        for (String type : keyTypes) {
+            if (type.startsWith("!")) {
+                String[] keys = type.substring(1).split("\\|");
+                for (String key : keys)
+                    notKeyWords.add(key);
+            }
+        }
+        return notKeyWords;
     }
 
     /**
@@ -173,12 +216,24 @@ public class DrainSettings {
     /**
      * Set a list of key words to the regex filter.
      *
-     * @param keyWords List of key words.
+     * @param keyWords    List of key words that have to be in the notification.
+     * @param notKeyWords List of key words that don't have to be in the notification.
      */
-    public void setKeyWordFilters(List<String> keyWords) {
-        String regex = "";
-        for (String word : keyWords)
-            regex += "|(" + REGEX_ANY_CHAR + "?" + REGEX_WORD_START + word + REGEX_WORD_FINISH + REGEX_ANY_CHAR + ")";
-        this.setRegexFilter(REGEX_CASE_INSENSITIVE + regex.replaceFirst("\\|", ""));
+    public void setKeyWordFilters(List<String> keyWords, List<String> notKeyWords) {
+        String contains = "";
+        if (!keyWords.isEmpty()) {
+            for (String word : keyWords)
+                contains += "|" + word;
+            contains = contains.replaceFirst("\\|", "(?=") + ")";
+        }
+
+        String notContains = "";
+        if (!notKeyWords.isEmpty()) {
+            for (String word : notKeyWords)
+                notContains += "|" + word;
+            notContains = notContains.replaceFirst("\\|", "(?!") + ")";
+        }
+
+        this.setRegexFilter(REGEX_CASE_INSENSITIVE + contains + notContains + REGEX_ANY_CHAR);
     }
 }
