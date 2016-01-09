@@ -1,8 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Notification Drain</string>
     <string name="regex_filter">Regex Filter (<a href='http://developer.android.com/reference/java/util/regex/Pattern.html'>API</a>)</string>
-    <string name="service_off">Service Not Running</string>
-    <string name="service_on">Service Running</string>
+    <string name="service_on">Drain Enabled</string>
     <string name="service_name">Notification Drain Service</string>
     <string name="regex_error">Invalid regex pattern.</string>
     <string name="service_help">This application only works if you enable it\'s notification access on phone settings.</string>
@@ -10,10 +10,13 @@
     <string name="regex_hint">.*</string>
     <string name="key_words">Key Words</string>
     <string name="key_word_hint">love</string>
+    <string name="key_word_in">Contain</string>
+    <string name="key_word_out">Not Contain</string>
     <string name="advanced_mode">Advanced Mode</string>
     <string name="basic_mode">Basic Mode</string>
     <string name="app_logo">Application logo.</string>
     <string name="key_word_error">Empty key word.</string>
     <string name="key_add">Add Key</string>
     <string name="key_remove">Remove </string>
+    <string name="service_off">Drain Disabled</string>
 </resources>
