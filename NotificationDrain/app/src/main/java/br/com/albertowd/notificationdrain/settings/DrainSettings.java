@@ -6,9 +6,12 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -45,8 +48,6 @@ public class DrainSettings {
     private static String cleanRegex(String regex) {
         String cleanRegex = regex.replace(REGEX_CASE_INSENSITIVE, "");
         cleanRegex = cleanRegex.replace(REGEX_ANY_CHAR, "");
-        cleanRegex = cleanRegex.replace("(", "");
-        cleanRegex = cleanRegex.replace(")", "");
         return cleanRegex;
     }
 
@@ -83,17 +84,16 @@ public class DrainSettings {
     /**
      * Set the regex filter string.
      *
-     * @param regex Regex filter or empty string to set the default filter "\S*".
+     * @param regex Regex filter or empty string to set the default filter ".*".
      * @return True if the regex was validated.
      */
     public boolean setRegexFilter(String regex) {
         boolean validRegex = false;
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         String regexString = regex.isEmpty() ? REGEX_ANY_CHAR : regex;
-        String oldRegex = this.getRegexFilter();
 
         try {
-            Pattern pattern = Pattern.compile(regexString);
+            Pattern.compile(regexString);
             validRegex = true;
         } catch (PatternSyntaxException pse) {
         }
@@ -135,15 +135,12 @@ public class DrainSettings {
         if (regex.equals(REGEX_ANY_CHAR))
             return keyWords;
 
-        regex = this.cleanRegex(regex);
-        String[] keyTypes = regex.split("\\?");
-
-        for (String type : keyTypes) {
-            if (type.startsWith("=")) {
-                String[] keys = type.substring(1).split("\\|");
-                for (String key : keys)
-                    keyWords.add(key);
-            }
+        try {
+            Pattern p = Pattern.compile("\\(\\?=\\.\\*(.*?)\\)");
+            Matcher matcher = p.matcher(regex);
+            if (matcher.find())
+                keyWords.addAll(Arrays.asList(matcher.group(1).split("\\|")));
+        } catch (Exception e) {
         }
         return keyWords;
     }
@@ -160,16 +157,14 @@ public class DrainSettings {
         if (regex.equals(REGEX_ANY_CHAR))
             return notKeyWords;
 
-        regex = this.cleanRegex(regex);
-        String[] keyTypes = regex.split("\\?");
-
-        for (String type : keyTypes) {
-            if (type.startsWith("!")) {
-                String[] keys = type.substring(1).split("\\|");
-                for (String key : keys)
-                    notKeyWords.add(key);
-            }
+        try {
+            Pattern p = Pattern.compile("\\(\\?!\\.\\*(.*?)\\)");
+            Matcher matcher = p.matcher(regex);
+            while (matcher.find())
+                notKeyWords.add(matcher.group(1));
+        } catch (Exception e) {
         }
+
         return notKeyWords;
     }
 
@@ -216,22 +211,21 @@ public class DrainSettings {
     /**
      * Set a list of key words to the regex filter.
      *
-     * @param keyWords    List of key words that have to be in the notification.
+     * @param keyWords    List of key words that have to be at least one in the notification.
      * @param notKeyWords List of key words that don't have to be in the notification.
      */
     public void setKeyWordFilters(List<String> keyWords, List<String> notKeyWords) {
-        String contains = "";
+        String contains = "(?=.*";
         if (!keyWords.isEmpty()) {
             for (String word : keyWords)
-                contains += "|" + word;
-            contains = contains.replaceFirst("\\|", "(?=") + ")";
+                contains += word + "|";
+            contains = contains.substring(0, contains.length() - 1) + ")";
         }
 
         String notContains = "";
         if (!notKeyWords.isEmpty()) {
             for (String word : notKeyWords)
-                notContains += "|" + word;
-            notContains = notContains.replaceFirst("\\|", "(?!") + ")";
+                notContains += "(?!" + REGEX_ANY_CHAR + word + ")";
         }
 
         this.setRegexFilter(REGEX_CASE_INSENSITIVE + contains + notContains + REGEX_ANY_CHAR);

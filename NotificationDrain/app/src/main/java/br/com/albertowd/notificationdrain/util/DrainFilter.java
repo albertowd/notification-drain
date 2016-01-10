@@ -1,36 +1,38 @@
 package br.com.albertowd.notificationdrain.util;
 
+import android.app.Notification;
+import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 
 public class DrainFilter {
 
     /**
-     * Get a notification and filter it in the message, title and ticker text (if available).
+     * Get a notification and filter it in all the possible texts of (if available).
      *
      * @param sbn   StatusBar Notification to filter.
      * @param regex Regex filter to match.
      * @return True if the notification had matched the filter.
      */
     public static boolean notificationMatched(StatusBarNotification sbn, String regex) {
-        Bundle extras = sbn.getNotification().extras;
-        CharSequence message = extras.getCharSequence("android.text");
+        String check = "";
+
         CharSequence tick = sbn.getNotification().tickerText;
-        String title = extras.getString("android.title", "");
+        if (tick != null)
+            check += tick.toString();
 
-        boolean tickMatches = false;
-        boolean titleMatches = title.matches(regex);
-        boolean messageMatches = false;
-
-        if (message != null) {
-            String textStr = message.toString();
-            messageMatches = textStr.matches(regex);
+        // If theres extra bundle, search all the strings.
+        if (Build.VERSION.SDK_INT >= 19) {
+            Bundle bundle = sbn.getNotification().extras;
+            check += bundle.getString(Notification.EXTRA_BIG_TEXT, "");
+            check += bundle.getString(Notification.EXTRA_INFO_TEXT, "");
+            check += bundle.getString(Notification.EXTRA_SUB_TEXT, "");
+            check += bundle.getString(Notification.EXTRA_SUMMARY_TEXT, "");
+            check += bundle.getString(Notification.EXTRA_TEXT, "");
+            check += bundle.getString(Notification.EXTRA_TITLE, "");
+            check += bundle.getString(Notification.EXTRA_TITLE_BIG, "");
         }
-        if (tick != null) {
-            String tickStr = tick.toString();
-            tickMatches = tickStr.matches(regex);
-        }
 
-        return messageMatches || tickMatches || titleMatches;
+        return check.matches(regex);
     }
 }

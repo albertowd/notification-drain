@@ -1,5 +1,6 @@
 package br.com.albertowd.notificationdrain.util;
 
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
@@ -11,17 +12,17 @@ public class Filter {
     /**
      * Key word EditText.
      */
-    private EditText etFilter;
+    private final EditText etFilter;
 
     /**
      * Wrapper LinearLayout.
      */
-    private LinearLayout llFilter;
+    private final LinearLayout llFilter;
 
     /**
      * ToggleButton to set the word to contains or not in the regex.
      */
-    private ToggleButton tbFilter;
+    private final ToggleButton tbFilter;
 
     /**
      * Default constructor.
@@ -33,7 +34,13 @@ public class Filter {
         etFilter = (EditText) this.llFilter.findViewById(R.id.etFilter);
         tbFilter = (ToggleButton) this.llFilter.findViewById(R.id.tbFilter);
 
-        new FilterTextWatcher((FilterNotificationActivity) llFilter.getContext(), etFilter);
+        new FilterTextWatcher((FilterNotificationActivity) this.llFilter.getContext(), etFilter);
+        tbFilter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ((FilterNotificationActivity) Filter.this.llFilter.getContext()).validateFilters();
+            }
+        });
         etFilter.requestFocus();
     }
 
