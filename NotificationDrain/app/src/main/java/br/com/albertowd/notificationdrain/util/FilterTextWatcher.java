@@ -44,10 +44,11 @@ public class FilterTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        if (s.toString().trim().isEmpty())
+        boolean invalid = s.toString().trim().isEmpty();
+        if (invalid)
             etFilter.setError(parent.getString(R.string.key_word_error));
         else
             etFilter.setError(null);
-        parent.validateFilters();
+        parent.updateFilters(!invalid);
     }
 }

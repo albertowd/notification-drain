@@ -20,14 +20,18 @@ import br.com.albertowd.notificationdrain.util.Filter;
 import br.com.albertowd.notificationdrain.util.FilterTextWatcher;
 
 public class FilterNotificationActivity extends Activity {
-
     /**
-     * Go to notification access settings button.
+     * Flag to toggle filter validation.
      */
-    private Button btNotificationAccess;
+    private boolean updateEnabled;
 
     /**
-     * Remove a EditText filter.
+     * Append a filter in the screen.
+     */
+    private Button btAppendFilter;
+
+    /**
+     * Remove a filter off the screen.
      */
     private Button btRemoveFilter;
 
@@ -47,7 +51,7 @@ public class FilterNotificationActivity extends Activity {
     private Filter llFilter0;
 
     /**
-     * Layout to add new EditText filters.
+     * Layout to add new filters.
      */
     private LinearLayout llKeyList;
 
@@ -62,15 +66,29 @@ public class FilterNotificationActivity extends Activity {
      * @return If was possible to append the new filter.
      */
     private boolean appendFilter() {
-        boolean canAppend = llFilter0.isValid();
-        canAppend |= !filters.isEmpty() && filters.get(filters.size() - 1).isValid();
+        boolean canAppend = this.canAppendFilter();
         if (canAppend) {
             Filter llFilter = new Filter((LinearLayout) this.getLayoutInflater().inflate(R.layout.layout_filter, null));
             llKeyList.addView(llFilter.getLayout(), llKeyList.getChildCount() - 1);
             filters.add(llFilter);
         }
 
+        btAppendFilter.setEnabled(false);
         btRemoveFilter.setEnabled(!filters.isEmpty());
+        return canAppend;
+    }
+
+    /**
+     * Check if it's ok append a filter on screen.
+     *
+     * @return True if it's all valid.
+     */
+    private boolean canAppendFilter() {
+        // Check if first filter is valid.
+        boolean canAppend = llFilter0.isValid();
+
+        // Check if last filter is valid.
+        canAppend |= !filters.isEmpty() && filters.get(filters.size() - 1).isValid();
         return canAppend;
     }
 
@@ -85,17 +103,18 @@ public class FilterNotificationActivity extends Activity {
         }
 
         btRemoveFilter.setEnabled(!filters.isEmpty());
+        this.updateFilters(true);
     }
 
     /**
      * Setup the listener of the buttons plus make the regex listener of the EditText.
      */
     private void setupListeners() {
-        // Set the go to notification access settings listener.
-        btNotificationAccess.setOnClickListener(new View.OnClickListener() {
+        // Set the add key button listener.
+        btAppendFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                settings.goToNotificationAccessSettings();
+                appendFilter();
             }
         });
 
@@ -118,14 +137,6 @@ public class FilterNotificationActivity extends Activity {
                     cbService.setChecked(false);
                     cbService.setText(FilterNotificationActivity.this.getText(R.string.service_off));
                 }
-            }
-        });
-
-        // Set the add key button listener.
-        super.findViewById(R.id.btAddFilter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                appendFilter();
             }
         });
 
@@ -157,8 +168,11 @@ public class FilterNotificationActivity extends Activity {
             keyWords.remove(0);
 
             for (String key : keyWords) {
-                if (this.appendFilter())
-                    filters.get(filters.size() - 1).setText(key);
+                if (this.appendFilter()) {
+                    Filter filter = filters.get(filters.size() - 1);
+                    filter.setText(key);
+                }
+
             }
         }
 
@@ -175,6 +189,7 @@ public class FilterNotificationActivity extends Activity {
                 }
             }
         }
+        this.updateFilters(false);
     }
 
     @Override
@@ -182,7 +197,7 @@ public class FilterNotificationActivity extends Activity {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_filter_notification);
 
-        btNotificationAccess = (Button) super.findViewById(R.id.btNotificationAccess);
+        btAppendFilter = (Button) super.findViewById(R.id.btAddFilter);
         btRemoveFilter = (Button) super.findViewById(R.id.btRemoveFilter);
         cbService = (CheckBox) super.findViewById(R.id.cbService);
         llFilter0 = new Filter((LinearLayout) super.findViewById(R.id.llFilter0));
@@ -200,33 +215,41 @@ public class FilterNotificationActivity extends Activity {
 
         cbService.setChecked(settings.isServiceEnabled());
 
-        int notificationAccessVisibility = settings.hasServiceAccess() ? View.GONE : View.VISIBLE;
-        btNotificationAccess.setVisibility(notificationAccessVisibility);
-        super.findViewById(R.id.tvNotificationHelp).setVisibility(notificationAccessVisibility);
-
         this.updateFilters();
+        updateEnabled = true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        updateEnabled = false;
+        super.onSaveInstanceState(outState);
     }
 
     /**
      * Get the valid filters to make the key words list regex and save it in the settings.
+     *
+     * @param update Flag to indicate if has to update settings or not.
      */
-    public void validateFilters() {
-        List<String> keyWords = new ArrayList<>();
-        List<String> notKeyWords = new ArrayList<>();
-        if (llFilter0.isValid()) {
-            if (llFilter0.hasToContain())
-                keyWords.add(llFilter0.getText());
-            else
-                notKeyWords.add(llFilter0.getText());
-            for (Filter filter : filters) {
-                if (filter.isValid()) {
-                    if (filter.hasToContain())
-                        keyWords.add(filter.getText());
-                    else
-                        notKeyWords.add(filter.getText());
+    public void updateFilters(boolean update) {
+        if (updateEnabled && update) {
+            List<String> keyWords = new ArrayList<>();
+            List<String> notKeyWords = new ArrayList<>();
+            if (llFilter0.isValid()) {
+                if (llFilter0.hasToContain())
+                    keyWords.add(llFilter0.getText());
+                else
+                    notKeyWords.add(llFilter0.getText());
+                for (Filter filter : filters) {
+                    if (filter.isValid()) {
+                        if (filter.hasToContain())
+                            keyWords.add(filter.getText());
+                        else
+                            notKeyWords.add(filter.getText());
+                    }
                 }
             }
+            settings.setKeyWordFilters(keyWords, notKeyWords);
         }
-        settings.setKeyWordFilters(keyWords, notKeyWords);
+        btAppendFilter.setEnabled(this.canAppendFilter());
     }
 }

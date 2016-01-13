@@ -15,6 +15,11 @@ public class Filter {
     private final EditText etFilter;
 
     /**
+     * TextWatcher to validate filter.
+     */
+    private final FilterTextWatcher textWatcher;
+
+    /**
      * Wrapper LinearLayout.
      */
     private final LinearLayout llFilter;
@@ -33,12 +38,12 @@ public class Filter {
         this.llFilter = llFilter;
         etFilter = (EditText) this.llFilter.findViewById(R.id.etFilter);
         tbFilter = (ToggleButton) this.llFilter.findViewById(R.id.tbFilter);
+        textWatcher = new FilterTextWatcher((FilterNotificationActivity) this.llFilter.getContext(), etFilter);
 
-        new FilterTextWatcher((FilterNotificationActivity) this.llFilter.getContext(), etFilter);
         tbFilter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ((FilterNotificationActivity) Filter.this.llFilter.getContext()).validateFilters();
+                ((FilterNotificationActivity) Filter.this.llFilter.getContext()).updateFilters(true);
             }
         });
         etFilter.requestFocus();
@@ -47,13 +52,15 @@ public class Filter {
     /**
      * @return True if the word needs to be contained in the notification.
      */
-    public boolean hasToContain() { return tbFilter.isChecked(); }
+    public boolean hasToContain() {
+        return tbFilter.isChecked();
+    }
 
     /**
      * @return True if there is no error in the filter.
      */
     public boolean isValid() {
-        return etFilter.getError() == null;
+        return etFilter.getText().length() > 0;
     }
 
     /**

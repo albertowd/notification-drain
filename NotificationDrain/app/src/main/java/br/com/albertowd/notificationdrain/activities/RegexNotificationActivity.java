@@ -16,10 +16,6 @@ import br.com.albertowd.notificationdrain.settings.DrainSettings;
 import br.com.albertowd.notificationdrain.util.RegexTextWatcher;
 
 public class RegexNotificationActivity extends Activity {
-    /**
-     * Go to notification access settings button.
-     */
-    private Button btNotificationAccess;
 
     /**
      * Checkbox to set the service running or not.
@@ -42,14 +38,6 @@ public class RegexNotificationActivity extends Activity {
     private void setupListeners() {
         // Set the filter validator.
         new RegexTextWatcher(this, etFilter);
-
-        //Set the go to notification access settings lintener.
-        btNotificationAccess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settings.goToNotificationAccessSettings();
-            }
-        });
 
         // Set the service running CheckBox listener.
         cbService.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -82,7 +70,6 @@ public class RegexNotificationActivity extends Activity {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_regex_notification);
 
-        btNotificationAccess = (Button) super.findViewById(R.id.btNotificationAccess);
         cbService = (CheckBox) super.findViewById(R.id.cbService);
         etFilter = (EditText) super.findViewById(R.id.etFilter);
         settings = new DrainSettings(this);
@@ -97,10 +84,5 @@ public class RegexNotificationActivity extends Activity {
 
         cbService.setChecked(settings.isServiceEnabled());
         etFilter.setText(settings.getRegexFilter());
-
-        int notificationAccessVisibility = settings.hasServiceAccess() ? View.GONE : View.VISIBLE;
-        btNotificationAccess.setVisibility(notificationAccessVisibility);
-        super.findViewById(R.id.tvNotificationHelp).setVisibility(notificationAccessVisibility);
-
     }
 }

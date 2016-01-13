@@ -2,22 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="end">
+    android:gravity="end"
+    android:orientation="horizontal">
 
     <EditText
+        android:id="@+id/etFilter"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:id="@+id/etFilter"
         android:layout_weight="1"
-        android:hint="@string/key_word_hint" />
+        android:hint="@string/key_word_hint"
+        android:singleLine="true" />
 
     <ToggleButton
+        android:id="@+id/tbFilter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New ToggleButton"
-        android:id="@+id/tbFilter"
-        android:textOn="@string/key_word_in"
+        android:checked="true"
         android:textOff="@string/key_word_out"
-        android:checked="true" />
+        android:textOn="@string/key_word_in" />
+
 </LinearLayout>

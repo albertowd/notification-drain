@@ -10,7 +10,7 @@
     <string name="regex_hint" translatable="false">.*</string>
     <string name="key_words">Key Words</string>
     <string name="key_word_hint">love</string>
-    <string name="key_word_in">Contain</string>
+    <string name="key_word_in">Wanted</string>
     <string name="key_word_out">Forbidden</string>
     <string name="advanced_mode">Advanced Mode</string>
     <string name="basic_mode">Basic Mode</string>

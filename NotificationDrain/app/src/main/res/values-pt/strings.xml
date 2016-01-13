@@ -14,6 +14,6 @@
     <string name="key_word_error">Palavra chave vazia.</string>
     <string name="key_add">Adicionar Palavra</string>
     <string name="key_remove">Remover</string>
-    <string name="key_word_in">Contém</string>
     <string name="service_off">Filtragem Desligada</string>
+    <string name="key_word_in">Procurada</string>
 </resources>
