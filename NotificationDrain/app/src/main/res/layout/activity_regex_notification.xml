@@ -43,8 +43,9 @@
         android:layout_below="@+id/llHeader"
         android:gravity="top"
         android:hint="@string/regex_hint"
-        android:inputType="textNoSuggestions"
-        android:singleLine="true" />
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:scrollHorizontally="false"
+        android:singleLine="false" />
 
     <CheckBox
         android:id="@+id/cbService"
