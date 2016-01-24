@@ -21,7 +21,7 @@ public class DrainSettings {
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static final String DEFAULT_VIEW_MODE = "view_mode";
     private static final String REGEX_ANY_CHAR = ".*";
-    private static final String REGEX_CASE_INSENSITIVE = "(?i)";
+    private static final String REGEX_CASE_INSENSITIVE = "(?im)";
     private static final String REGEX_FILTER = "regex_filter";
     private static final String REGEX_WORD_FINISH = "\\E";
     private static final String REGEX_WORD_START = "\\Q";
