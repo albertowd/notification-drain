@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 
 public class DrainFilter {
+    private static final String SPACE = " ";
 
     /**
      * Get a notification and filter it in all the possible texts of (if available).
@@ -24,13 +25,13 @@ public class DrainFilter {
         // If theres extra bundle, search all the strings.
         if (Build.VERSION.SDK_INT >= 19) {
             Bundle bundle = sbn.getNotification().extras;
-            check += bundle.getString(Notification.EXTRA_BIG_TEXT, "");
-            check += bundle.getString(Notification.EXTRA_INFO_TEXT, "");
-            check += bundle.getString(Notification.EXTRA_SUB_TEXT, "");
-            check += bundle.getString(Notification.EXTRA_SUMMARY_TEXT, "");
-            check += bundle.getString(Notification.EXTRA_TEXT, "");
-            check += bundle.getString(Notification.EXTRA_TITLE, "");
-            check += bundle.getString(Notification.EXTRA_TITLE_BIG, "");
+            check += SPACE + bundle.getString(Notification.EXTRA_BIG_TEXT, "");
+            check += SPACE + bundle.getString(Notification.EXTRA_INFO_TEXT, "");
+            check += SPACE + bundle.getString(Notification.EXTRA_SUB_TEXT, "");
+            check += SPACE + bundle.getString(Notification.EXTRA_SUMMARY_TEXT, "");
+            check += SPACE + bundle.getString(Notification.EXTRA_TEXT, "");
+            check += SPACE + bundle.getString(Notification.EXTRA_TITLE, "");
+            check += SPACE + bundle.getString(Notification.EXTRA_TITLE_BIG, "");
         }
 
         return check.matches(regex);
